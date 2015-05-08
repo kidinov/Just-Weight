@@ -1,0 +1,37 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.jenzz.materialpreference.Preference
+        android:id="@+id/unit"
+        android:key="unit"
+        android:title="@string/weight_unit"
+        />
+
+    <com.jenzz.materialpreference.Preference
+        android:id="@+id/export"
+        android:key="export"
+        android:title="@string/export"
+        android:summary="@string/export_data"
+        />
+
+    <com.jenzz.materialpreference.Preference
+        android:id="@+id/import_"
+        android:key="import_"
+        android:title="@string/import_"
+        android:summary="@string/import_data"
+        />
+
+    <com.jenzz.materialpreference.CheckBoxPreference
+        android:id="@+id/g_fit"
+        android:key="g_fit"
+        android:title="@string/google_fit"
+        android:summary="@string/google_fit_int"
+        />
+
+    <com.jenzz.materialpreference.Preference
+        android:id="@+id/pro"
+        android:key="pro"
+        android:title="@string/pro_version"
+        android:summary="@string/full_functional_version"
+        />
+
+</PreferenceScreen>

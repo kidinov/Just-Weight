@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/files"
+            android:layout_weight="1"
+            android:overScrollMode="never"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"/>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:layout_margin="10dp"
+            android:textSize="16sp"
+            android:id="@+id/file_name"
+            app:met_hideUnderline="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:clickable="true"
+        android:background="@android:color/transparent"
+        android:visibility="gone"
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.gc.materialdesign.views.ProgressBarCircularIndeterminate
+            android:layout_centerInParent="true"
+            android:background="@color/primary_dark"
+            android:layout_width="32dp"
+            android:layout_height="32dp"/>
+    </RelativeLayout>
+</RelativeLayout>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Just Weight</string>
+    <string name="action_settings">Настройки</string>
+    <string name="all_data">ВСЯ ИСТОРИЯ</string>
+    <string name="chart">График</string>
+    <string name="date">Дата</string>
+    <string name="delete">УДАЛИТЬ</string>
+    <string name="done">Готово</string>
+    <string name="export">Экспорт</string>
+    <string name="export_data">Экспорт данных в файл</string>
+    <string name="file_name">Имя файла</string>
+    <string name="file_name_is_not_valid">имя не валидно</string>
+    <string name="full_functional_version">Получить полную версию</string>
+    <string name="history">История</string>
+    <string name="iap_not_available">Покупки внутри приложения не доступны</string>
+    <string name="import_">Импорт</string>
+    <string name="import_data">Импорт данных из файла</string>
+    <string name="kg">кг</string>
+    <string name="kilograms">Килограммы</string>
+    <string name="lbs">фунт</string>
+    <string name="no_date_to_show">Нет данных</string>
+    <string name="pick_folder">Выберите папку</string>
+    <string name="pick_file">Выберите файл с бекапом</string>
+    <string name="pick_weight_dialog_title">Введите ваш вес</string>
+    <string name="pounds">Фунты</string>
+    <string name="pro_version">Полная версия</string>
+    <string name="pro_version_text">Купите полную версию и избавьтесь от рекламы, а также получите все функции!</string>
+    <string name="rate_message">Привет! Если вам нравится моя программа, пожалуйста поставьте оценку на Google Play!</string>
+    <string name="rate_no_thanks">Нет</string>
+    <string name="rate_rate_now">Оценить</string>
+    <string name="rate_remind_me_later">напомнить позже</string>
+    <string name="rate_title">Оценить приложение</string>
+    <string name="something_went_wrong">Что-то пошло не так. Попробуйте с другим файлом</string>
+    <string name="title_activity_settings">Настройки</string>
+    <string name="undo">ОТМЕНА</string>
+    <string name="weight_unit">Единица измерения</string>
+    <string name="google_fit">Google Fit</string>
+    <string name="google_fit_int">Сохранять данные в Google Fit</string>
+</resources>

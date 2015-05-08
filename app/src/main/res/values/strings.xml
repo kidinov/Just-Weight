@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">Just Weight</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="pick_weight_dialog_title">Enter weight for this date</string>
+    <string name="weight_unit">Weight unit</string>
+    <string name="kilograms">Kilograms</string>
+    <string name="pounds">Pounds</string>
+    <string name="kg">kg</string>
+    <string name="lbs">lbs</string>
+    <string name="date">Date</string>
+    <string name="no_date_to_show">No Data To Show</string>
+
+    <string name="export_data">Export data to file</string>
+    <string name="export">Export</string>
+
+    <string name="import_data">Import data from file</string>
+    <string name="import_">Import</string>
+    <string name="pick_folder">Pick folder</string>
+    <string name="pick_file">Pick backup file</string>
+    <string name="file_name">File name</string>
+    <string name="file_name_is_not_valid">name is not valid</string>
+    <string name="done">Done</string>
+    <string name="something_went_wrong">Something went wrong. Try again with another file</string>
+
+    <string name="chart">Chart</string>
+    <string name="history">History</string>
+    <string name="undo">UNDO</string>
+    <string name="delete">DELETE</string>
+    <string name="all_data">ALL HISTORY</string>
+    <string name="iap_not_available">IAP not available on this device</string>
+    <string name="pro_version">Pro version</string>
+    <string name="pro_version_text">Buy pro and get rid of advertising, as well as open all functionality!</string>
+
+
+    <string name="rate_title">Rate this app</string>
+    <string name="rate_message">Hi, take a minute to rate this app and help support to improve more new features. ;)</string>
+    <string name="rate_no_thanks">No, thanks</string>
+    <string name="rate_remind_me_later">Remind me later</string>
+    <string name="rate_rate_now">Rate now</string>
+    <string name="full_functional_version">Get full functional version</string>
+    <string name="google_fit">Google Fit</string>
+    <string name="google_fit_int">Save data in Google Fit</string>
+</resources>

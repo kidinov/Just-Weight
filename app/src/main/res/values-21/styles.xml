@@ -1,0 +1,25 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/toolbar_prim</item>
+
+        <!-- colorPrimaryDark is used for the status bar -->
+        <item name="colorPrimaryDark">@color/statusbar_prim</item>
+
+        <item name="colorAccent">@color/statusbar_prim</item>
+        <item name="windowActionBar">false</item>
+
+        <item name="navigationBarColor">@color/toolbar_prim</item>
+        <item name="windowBackground">@color/activity_bcg</item>
+    </style>
+
+    <style name="ToolBarStyle" parent="Theme.AppCompat">
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorSecondary">@android:color/white</item>
+        <item name="actionMenuTextColor">@android:color/white</item>
+        <item name="colorPrimaryDark">@color/statusbar_prim</item>
+        <item name="colorAccent">@color/statusbar_prim</item>
+    </style>
+</resources>
