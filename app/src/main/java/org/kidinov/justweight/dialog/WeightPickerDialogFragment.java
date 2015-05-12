@@ -42,7 +42,7 @@ import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
 public class WeightPickerDialogFragment extends BaseDialogFragment {
     public final static int WEIGHT_UNIT_PICK = 41;
     public final static int DATE_PICK = 42;
-    private static final String TAG = "WeightPickerDialogFragment";
+    private static final String TAG = "WeightPickerDialogFrag";
 
 
     private RecyclerView weightPicker;
@@ -132,15 +132,16 @@ public class WeightPickerDialogFragment extends BaseDialogFragment {
     private final MaterialDialog.ButtonCallback mButtonCallback = new MaterialDialog.ButtonCallback() {
         @Override
         public void onPositive(MaterialDialog materialDialog) {
-            Log.d(TAG, String.format("Saving = %d", EnvUtil.convertToKg(act, getValue())));
-            preferences.edit().putInt("last_weight", EnvUtil.convertToKg(act, getValue())).apply();
+            int kg = EnvUtil.convertToKg(act, getValue());
+            Log.d(TAG, String.format("Saving = %d", kg));
+            preferences.edit().putInt("last_weight", kg).apply();
 
             long time = EnvUtil.getLocalFromString(dateValue.getText().toString()).getTime();
             Weight todayWeight = DbHelper.getRecordByDate(time);
             if (todayWeight == null) {
-                todayWeight = new Weight(time, EnvUtil.convertToKg(act, getValue()), EnvUtil.getCurrentUnit(act));
+                todayWeight = new Weight(time, kg, EnvUtil.getCurrentUnit(act));
             } else {
-                todayWeight.setValue(EnvUtil.convertToKg(act, getValue()));
+                todayWeight.setValue(kg);
                 todayWeight.setUnit(EnvUtil.getCurrentUnit(act));
             }
             todayWeight.save();

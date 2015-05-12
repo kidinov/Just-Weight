@@ -9,8 +9,8 @@ android {
         applicationId "org.kidinov.justweight"
         minSdkVersion 14
         targetSdkVersion 22
-        versionCode 8
-        versionName "1.01"
+        versionCode 9
+        versionName "1.02"
     }
 
     compileOptions {

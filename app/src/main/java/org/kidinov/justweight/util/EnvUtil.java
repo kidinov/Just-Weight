@@ -4,6 +4,8 @@ import android.content.Context;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import org.kidinov.justweight.R;
+
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -13,14 +15,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import org.kidinov.justweight.R;
-
 /**
  * Created by akid on 17/04/15.
  */
 public class EnvUtil {
 
     private static final String TAG = "EnvUtil";
+    private static final SimpleDateFormat sdfForGraph = new SimpleDateFormat("dd");
 
     public static String formatWeight(int value) {
         DecimalFormat df = new DecimalFormat("#.#", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
@@ -45,7 +46,7 @@ public class EnvUtil {
     }
 
     public static String getFormattedDateForGraph(long date) {
-        return new SimpleDateFormat("dd").format(new Date(date));
+        return sdfForGraph.format(new Date(date));
     }
 
     public static String getCurrentUnit(Context ctx) {
@@ -68,14 +69,14 @@ public class EnvUtil {
 
     public static int convertToKg(Context ctx, int value) {
         if (getCurrentUnit(ctx).equals("lbs")) {
-            return (int) (value / 2.441933);
+            return Math.round((float) (value / 2.441933));
         }
         return value;
     }
 
     public static int convertFromKg(Context ctx, int value) {
         if (getCurrentUnit(ctx).equals("lbs")) {
-            return (int) (value * 2.441933);
+            return (int) Math.ceil(value * 2.441933);
         }
         return value;
     }
