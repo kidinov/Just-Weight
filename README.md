@@ -11,6 +11,8 @@ Find out it on [Google Play](https://play.google.com/store/apps/details?id=org.k
 # Usage restriction
 This sources mostly for educational porpuse. You can use any part of that source as you wish, but you not able to build this app (cutting something) and publish as your application.
 
+If you need only weight picker widget - take it [here](https://github.com/kidinov/SimpleNumberPicker).
+
 Thanks.
 
 
