@@ -6,8 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,7 +13,6 @@ import org.kidinov.justweight.R;
 import org.kidinov.justweight.model.Weight;
 import org.kidinov.justweight.util.EnvUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -76,13 +73,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             value = (TextView) v.findViewById(R.id.value);
             unit = (TextView) v.findViewById(R.id.unit);
             delete = (ImageView) v.findViewById(R.id.delete);
-
         }
 
         public void bind(int index) {
             Weight w = weights.get(index);
             date.setText(EnvUtil.getFormattedDate(w.getDate()));
-            value.setText(EnvUtil.formatWeight(EnvUtil.convertFromKg(ctx, w.getValue())));
+            value.setText(EnvUtil.formatWeight(EnvUtil.getProperValue(w, ctx)));
+
             unit.setText(EnvUtil.getLocalUnitString(ctx));
             delete.setOnClickListener(view -> {
                 Log.d(TAG, String.format("delete = %d", index));

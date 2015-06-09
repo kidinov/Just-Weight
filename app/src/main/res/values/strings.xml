@@ -41,4 +41,5 @@
     <string name="full_functional_version">Get full functional version</string>
     <string name="google_fit">Google Fit</string>
     <string name="google_fit_int">Save data in Google Fit</string>
+    <string name="new_data_from_g_fit">New data from Google Fit</string>
 </resources>

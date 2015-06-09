@@ -37,4 +37,5 @@
     <string name="weight_unit">Единица измерения</string>
     <string name="google_fit">Google Fit</string>
     <string name="google_fit_int">Save data in Google Fit</string>
+    <string name="new_data_from_g_fit">New data from Google Fit</string>
 </resources>

@@ -107,7 +107,7 @@ public class ChartHelper {
         ArrayList<Float> yVals = new ArrayList<>();
         for (Weight w : weights) {
             xVals.add(EnvUtil.getFormattedDateForGraph(w.getDate()));
-            yVals.add(Float.parseFloat(EnvUtil.formatWeight(EnvUtil.convertFromKg(ctx, w.getValue()))));
+            yVals.add(Float.parseFloat(EnvUtil.formatWeight(EnvUtil.getProperValue(w, ctx))));
         }
 
         dataSet = new LineSet();

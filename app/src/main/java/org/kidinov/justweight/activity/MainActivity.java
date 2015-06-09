@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.Toast;
 
 import com.gc.materialdesign.views.ButtonFloat;
 import com.google.android.gms.ads.AdListener;
@@ -26,6 +27,11 @@ import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.fitness.Fitness;
+import com.google.android.gms.fitness.data.DataPoint;
+import com.google.android.gms.fitness.data.DataType;
+import com.google.android.gms.fitness.data.Field;
+import com.google.android.gms.fitness.request.DataReadRequest;
+import com.google.android.gms.fitness.result.DataReadResult;
 import com.splunk.mint.Mint;
 
 import org.kidinov.justweight.App;
@@ -35,7 +41,13 @@ import org.kidinov.justweight.dialog.RatingDialogFragment;
 import org.kidinov.justweight.dialog.UnitsPickerDialogFragment;
 import org.kidinov.justweight.dialog.WeightPickerDialogFragment;
 import org.kidinov.justweight.fragment.BaseFragment;
+import org.kidinov.justweight.model.Weight;
 import org.kidinov.justweight.util.DbHelper;
+import org.kidinov.justweight.util.EnvUtil;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
@@ -152,6 +164,41 @@ public class MainActivity extends BaseActivity implements OnDialogDissmissed {
                     @Override
                     public void onConnected(Bundle bundle) {
                         Log.i(TAG, "Connected!!!");
+                        if (PreferenceManager.getDefaultSharedPreferences(MainActivity.this).getBoolean("fit", false)) {
+                            Calendar cal = Calendar.getInstance();
+                            Date now = new Date();
+                            cal.setTime(now);
+                            long endTime = cal.getTimeInMillis();
+                            cal.add(Calendar.YEAR, -5);
+                            long startTime = cal.getTimeInMillis();
+
+                            DataReadRequest readRequest = new DataReadRequest.Builder().read(DataType.TYPE_WEIGHT)
+                                    .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS).build();
+                            new Thread(() -> {
+                                DataReadResult dataReadResult = Fitness.HistoryApi.readData(googleApiClient, readRequest).await(1, TimeUnit.MINUTES);
+                                boolean newData = false;
+                                for (DataPoint dp : dataReadResult.getDataSet(DataType.TYPE_WEIGHT).getDataPoints()) {
+                                    Log.d(TAG, String.format("startTime = %d", dp.getStartTime(TimeUnit.MILLISECONDS)));
+                                    Log.d(TAG, String.format("dp weight = %f", dp.getValue(Field.FIELD_WEIGHT).asFloat()));
+                                    long time = EnvUtil.getLocalFromString(EnvUtil.getFormattedDate(dp.getStartTime(TimeUnit.MILLISECONDS))).getTime();
+                                    Weight todayWeight = DbHelper.getRecordByDate(time);
+                                    if (todayWeight == null) {
+                                        todayWeight = new Weight(time, (int) (dp.getValue(Field.FIELD_WEIGHT).asFloat() * 10), "kg");
+                                        todayWeight.save();
+                                        newData = true;
+                                    }
+                                }
+
+                                if (newData) {
+                                    runOnUiThread(() -> {
+                                        new Handler().postDelayed(() -> {
+                                            Toast.makeText(MainActivity.this, R.string.new_data_from_g_fit, Toast.LENGTH_LONG).show();
+                                            updateData();
+                                        }, 1000);
+                                    });
+                                }
+                            }).start();
+                        }
                     }
 
                     @Override

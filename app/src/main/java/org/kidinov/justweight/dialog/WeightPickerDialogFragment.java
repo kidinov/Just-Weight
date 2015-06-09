@@ -25,6 +25,9 @@ import com.google.android.gms.fitness.data.DataSet;
 import com.google.android.gms.fitness.data.DataSource;
 import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.fitness.data.Field;
+import com.google.android.gms.fitness.request.DataDeleteRequest;
+import com.google.android.gms.fitness.request.DataReadRequest;
+import com.google.android.gms.fitness.result.DataReadResult;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import org.kidinov.justweight.R;
@@ -92,7 +95,7 @@ public class WeightPickerDialogFragment extends BaseDialogFragment {
             UnitsPickerDialogFragment f = UnitsPickerDialogFragment.newInstance();
             f.setTargetFragment(WeightPickerDialogFragment.this, WEIGHT_UNIT_PICK);
             f.show(getChildFragmentManager(), "UnitsPickerDialogFragment");
-            preferences.edit().putInt("last_weight", EnvUtil.convertToKg(act, getValue())).apply();
+            preferences.edit().putInt("last_weight", getValue()).apply();
         });
 
         llm = new LinearLayoutManager(act, LinearLayoutManager.HORIZONTAL, false);
@@ -114,8 +117,8 @@ public class WeightPickerDialogFragment extends BaseDialogFragment {
         Log.d(TAG, String.format("geting = %d", preferences.getInt("last_weight", 700)));
 
         new Handler().postDelayed(() -> {
-            weightPicker.scrollToPosition(EnvUtil.convertFromKg(act, preferences.getInt("last_weight", 700)) + (llm.findLastVisibleItemPosition() - llm
-                    .findFirstVisibleItemPosition()) / 2);
+            weightPicker.scrollToPosition(
+                    (int) (preferences.getInt("last_weight", 700) + Math.ceil((llm.findLastVisibleItemPosition() - llm.findFirstVisibleItemPosition()) / 2)));
         }, 100);
 
         MaterialDialog materialDialog = new MaterialDialog.Builder(act).callback(mButtonCallback).autoDismiss(false).positiveText(android.R.string.ok)
@@ -132,25 +135,26 @@ public class WeightPickerDialogFragment extends BaseDialogFragment {
     private final MaterialDialog.ButtonCallback mButtonCallback = new MaterialDialog.ButtonCallback() {
         @Override
         public void onPositive(MaterialDialog materialDialog) {
-            int kg = EnvUtil.convertToKg(act, getValue());
-            Log.d(TAG, String.format("Saving = %d", kg));
-            preferences.edit().putInt("last_weight", kg).apply();
+//            int kg = EnvUtil.convertToKg(act, getValue());
+            Log.d(TAG, String.format("Saving = %d", getValue()));
+            preferences.edit().putInt("last_weight", getValue()).apply();
 
             long time = EnvUtil.getLocalFromString(dateValue.getText().toString()).getTime();
             Weight todayWeight = DbHelper.getRecordByDate(time);
             if (todayWeight == null) {
-                todayWeight = new Weight(time, kg, EnvUtil.getCurrentUnit(act));
+                todayWeight = new Weight(time, getValue(), EnvUtil.getCurrentUnit(act));
             } else {
-                todayWeight.setValue(kg);
+                todayWeight.setValue(getValue());
                 todayWeight.setUnit(EnvUtil.getCurrentUnit(act));
             }
             todayWeight.save();
 
-            if (PreferenceManager.getDefaultSharedPreferences(act).getBoolean("fit", false)) insertInFit(todayWeight);
-
-            ((MainActivity) getActivity()).updateData();
-
-            materialDialog.dismiss();
+            if (PreferenceManager.getDefaultSharedPreferences(act).getBoolean("fit", false)) {
+                insertInFit(todayWeight, materialDialog);
+            } else {
+                ((MainActivity) getActivity()).updateData();
+                materialDialog.dismiss();
+            }
         }
 
         @Override
@@ -159,7 +163,7 @@ public class WeightPickerDialogFragment extends BaseDialogFragment {
         }
     };
 
-    private void insertInFit(Weight todayWeight) {
+    private void insertInFit(Weight todayWeight, MaterialDialog materialDialog) {
         if (!((MainActivity) getActivity()).googleApiClient.isConnected()) {
             Log.i(TAG, String.format("NOT CONNECTED"));
             return;
@@ -171,7 +175,7 @@ public class WeightPickerDialogFragment extends BaseDialogFragment {
 
         Log.i(TAG, String.format("inserting at time = %d", todayWeight.getDate()));
         DataPoint dataPoint = dataSet.createDataPoint().setTimestamp(todayWeight.getDate() + 1, TimeUnit.MILLISECONDS);
-        dataPoint.getValue(Field.FIELD_WEIGHT).setFloat((float) EnvUtil.convertToKg(act, todayWeight.getValue()) / 10);
+        dataPoint.getValue(Field.FIELD_WEIGHT).setFloat((float) EnvUtil.getKgValue(todayWeight, act) / 10);
         dataSet.add(dataPoint);
 
         Log.i(TAG, "Inserting the dataset in the History API");
@@ -179,8 +183,25 @@ public class WeightPickerDialogFragment extends BaseDialogFragment {
 
             @Override
             protected Void doInBackground(Void... voids) {
+                DataReadRequest readRequest = new DataReadRequest.Builder().read(DataType.TYPE_WEIGHT)
+                        .setTimeRange(todayWeight.getDate() - 1, todayWeight.getDate() + 1, TimeUnit.MILLISECONDS).build();
+                DataReadResult dataReadResult = Fitness.HistoryApi.readData(((MainActivity) getActivity()).googleApiClient, readRequest)
+                        .await(1, TimeUnit.MINUTES);
+                if (!dataReadResult.getDataSet(DataType.TYPE_WEIGHT).isEmpty()) {
+                    DataDeleteRequest deleteRequest = new DataDeleteRequest.Builder()
+                            .setTimeInterval(todayWeight.getDate() - 1, todayWeight.getDate() + 1, TimeUnit.MILLISECONDS).addDataType(DataType.TYPE_WEIGHT)
+                            .build();
+                    com.google.android.gms.common.api.Status deleteData = Fitness.HistoryApi
+                            .deleteData(((MainActivity) getActivity()).googleApiClient, deleteRequest).await(1, TimeUnit.MINUTES);
+                    if (!deleteData.isSuccess()) {
+                        Log.i(TAG, "There was a problem inserting the dataset.");
+                    } else {
+                        Log.i(TAG, "Data was deleted successfully!");
+                    }
+                }
+
                 com.google.android.gms.common.api.Status insertStatus = Fitness.HistoryApi.insertData(((MainActivity) getActivity()).googleApiClient, dataSet)
-                        .await(3, TimeUnit.MINUTES);
+                        .await(1, TimeUnit.MINUTES);
 
                 if (!insertStatus.isSuccess()) {
                     Log.i(TAG, "There was a problem inserting the dataset.");
@@ -189,6 +210,13 @@ public class WeightPickerDialogFragment extends BaseDialogFragment {
 
                 Log.i(TAG, "Data insert was successful!");
                 return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                ((MainActivity) getActivity()).updateData();
+                materialDialog.dismiss();
+                super.onPostExecute(aVoid);
             }
         }.execute();
     }
@@ -202,7 +230,7 @@ public class WeightPickerDialogFragment extends BaseDialogFragment {
             case WEIGHT_UNIT_PICK:
                 if (resultCode == Activity.RESULT_OK) {
                     unitType.setText(EnvUtil.getLocalUnitString(act));
-                    weightPicker.scrollToPosition(EnvUtil.convertFromKg(act, preferences.getInt("last_weight", 700)));
+                    weightPicker.scrollToPosition(preferences.getInt("last_weight", 700));
                 }
                 break;
             case DATE_PICK:

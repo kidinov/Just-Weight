@@ -811,6 +811,9 @@ public class IabHelper {
 
     int queryPurchases(Inventory inv, String itemType) throws JSONException, RemoteException {
         // Query purchases
+        if (mContext == null) {
+            return IABHELPER_VERIFICATION_FAILED;
+        }
         logDebug("Querying owned items, item type: " + itemType);
         logDebug("Package name: " + mContext.getPackageName());
         boolean verificationFailed = false;

@@ -5,6 +5,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import org.kidinov.justweight.R;
+import org.kidinov.justweight.model.Weight;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -67,20 +68,33 @@ public class EnvUtil {
         return c.getTime();
     }
 
-    public static int convertToKg(Context ctx, int value) {
-        if (getCurrentUnit(ctx).equals("lbs")) {
-            return Math.round((float) (value / 2.441933));
-        }
-        return value;
+    public static int convertFromLbs(int value) {
+        return Math.round((float) (value * 0.453592));
     }
 
-    public static int convertFromKg(Context ctx, int value) {
-        if (getCurrentUnit(ctx).equals("lbs")) {
-            return (int) Math.ceil(value * 2.441933);
-        }
-        return value;
+    public static int convertFromKg(int value) {
+        return (int) Math.ceil(value / 0.453592);
     }
 
+    public static int getProperValue(Weight w, Context ctx) {
+        if (w.getUnit().equals(EnvUtil.getCurrentUnit(ctx))) {
+            return w.getValue();
+        } else {
+            if (w.getUnit().equals("kg")) {
+                return EnvUtil.convertFromKg(w.getValue());
+            } else {
+                return EnvUtil.convertFromLbs(w.getValue());
+            }
+        }
+    }
+
+    public static int getKgValue(Weight w, Context ctx) {
+        if (w.getUnit().equals("kg")) {
+            return w.getValue();
+        } else {
+            return convertFromLbs(w.getValue());
+        }
+    }
 
     public static String getPubKey() {
         StringBuilder sb = new StringBuilder();
